@@ -29,6 +29,7 @@ parallel_HGS_type:=function(n);
 		t_groups:=[[*G`subgroup,A*] : G in t];
 		trans := trans cat t_groups;
 	end for;
+	RF1:=recformat<trans_gp,isom,type,parallel_data>;
 	data:=[];
 	for G in trans do;
 		exists_HGS:=[];
@@ -39,35 +40,33 @@ parallel_HGS_type:=function(n);
 			for H in index_n do
 				Hsub:=H`subgroup;
 				C:=Core(G[1],Hsub);
-				if IsTrivial(C) eq false then
-						//now we need to see Hsub/C as a subgroup of G/C
-					J,pi:=quo<G[1]|Generators(C)>;													//pi gives the canonical map from G to G/C:=J
-					f:=hom<Hsub-> G[1] | SetToSequence(Generators(Hsub)) >; 						//f gives the inclusion map from Hsub to G
-					if IsHomomorphism(f) then													//for some reason, MAGMA thinks that f is not a homomorphism on occasion...
-						Jprime:=Image(f*pi); 													//Jprime:=Hsub/C is identified as a subgroup of G/C
-						exists_isom:=false;
-						i:=1;
-						while exists_isom eq false and i le #trans do
-							bool,isom:=IsIsomorphic(J,trans[i][1]);
-							if bool eq true then
-								if Position(stabs(trans[i][1]),isom(Jprime)) gt 0 then
-									exists_isom:=true;
-								end if;
+					//now we need to see Hsub/C as a subgroup of G/C
+				J,pi:=quo<G[1]|Generators(C)>;													//pi gives the canonical map from G to G/C:=J
+				f:=hom<Hsub-> G[1] | SetToSequence(Generators(Hsub)) >; 						//f gives the inclusion map from Hsub to G
+				if IsHomomorphism(f) then													//for some reason, MAGMA thinks that f is not a homomorphism on occasion...
+					Jprime:=Image(f*pi); 													//Jprime:=Hsub/C is identified as a subgroup of G/C
+					exists_isom:=false;
+					i:=1;
+					while exists_isom eq false and i le #trans do
+						bool,isom:=IsIsomorphic(J,trans[i][1]);
+						if bool eq true then
+							if Position(stabs(trans[i][1]),isom(Jprime)) gt 0 then
+								exists_isom:=true;
 							end if;
-							i:=i+1;
-						end while;
-					end if;
-				else
-					exists_isom:=true;
+						end if;
+						i:=i+1;
+					end while;
 				end if;
 				if exists_isom eq false then
-					Append(~exists_HGS,exists_isom);
+					RF2:=recformat<index_n_subgp,core>;
+					r2:=rec<RF2 | index_n_subgp:=Hsub,core:=C>;
+					Append(~exists_HGS,r2);
 				end if;
 			end for;
 		end if;
-		//Append(~data,[*G,exists_HGS*]);
 		if #exists_HGS ge 1 then
-			Append(~data,[*G[1],GroupName(G[1]),GroupName(G[2])*]);
+			r1:=rec<RF1 | trans_gp:=G[1],isom:=GroupName(G[1]),type:=GroupName(G[2]),parallel_data:=exists_HGS>;
+			Append(~data,r1);
 		end if;
 	end for;
 	return data;
