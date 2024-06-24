@@ -1,6 +1,6 @@
 # An algorithm for HGS on parallel extensions 
 
-[![DOI](https://zenodo.org/badge/744112400.svg)](https://zenodo.org/doi/10.5281/zenodo.10519675)
+[![DOI](https://zenodo.org/badge/744112400.svg)](https://zenodo.org/doi/10.5281/zenodo.12518364)
 
 For a given positive integer n, the command "parallel_HGS_type(n);" outputs a list of records corresponding to a transitive subgroup G<Hol(N) possessing the parallel-noHGS property.
 For example, the first entry in "parallel_HGS_type(8);" is:
