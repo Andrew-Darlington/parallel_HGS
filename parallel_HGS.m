@@ -40,23 +40,20 @@ parallel_HGS_type:=function(n);
 			for H in index_n do
 				Hsub:=H`subgroup;
 				C:=Core(G[1],Hsub);
-					//now we need to see Hsub/C as a subgroup of G/C
-				J,pi:=quo<G[1]|Generators(C)>;													//pi gives the canonical map from G to G/C:=J
-				f:=hom<Hsub-> G[1] | SetToSequence(Generators(Hsub)) >; 						//f gives the inclusion map from Hsub to G
-				if IsHomomorphism(f) then													//for some reason, MAGMA thinks that f is not a homomorphism on occasion...
-					Jprime:=Image(f*pi); 													//Jprime:=Hsub/C is identified as a subgroup of G/C
-					exists_isom:=false;
-					i:=1;
-					while exists_isom eq false and i le #trans do
-						bool,isom:=IsIsomorphic(J,trans[i][1]);
-						if bool eq true then
-							if Position(stabs(trans[i][1]),isom(Jprime)) gt 0 then
-								exists_isom:=true;
-							end if;
+													//now we need to see Hsub/C as a subgroup of G/C
+				J,pi:=quo<G[1]|Generators(C)>;		//pi gives the canonical map from G to G/C:=J
+				Jprime:=pi(Hsub);					//Jprime = Hsub/C;
+				exists_isom:=false;
+				i:=1;
+				while exists_isom eq false and i le #trans do
+					bool,isom:=IsIsomorphic(J,trans[i][1]);
+					if bool eq true then
+						if Position(stabs(trans[i][1]),isom(Jprime)) gt 0 then
+							exists_isom:=true;
 						end if;
-						i:=i+1;
-					end while;
-				end if;
+					end if;
+					i:=i+1;
+				end while;
 				if exists_isom eq false then
 					RF2:=recformat<index_n_subgp,core>;
 					r2:=rec<RF2 | index_n_subgp:=Hsub,core:=C>;
